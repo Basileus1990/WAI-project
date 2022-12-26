@@ -59,10 +59,20 @@
                     <a href="../images/nawyk6.jpg" title="Zdrowe nawyki"><img src="../images/nawyk6.jpg" width="175" height="150" alt="Zdrowe nawyki"></a>
                 </div>
             </div>
+            <div class="image-user-input">
+                <form action="galeria" method="post" enctype="multipart/form-data">
+                    <label for="#image">Wyślij zdjęcie:</label>
+                    <input type="file" , name="sent-image" id="sent-image" accept=".jpg, .jpeg, .png" />
+                    <button type="submit">Wyślij zdjęcie</button>
+                </form>
+                <?php if (key_exists('image-status-message', $model)) : ?>
+                    <span class="image-status-message"><?= $model['image-status-message'] ?></span>
+                <?php endif; ?>
+            </div>
         </div>
         <footer>
             <a class="back-to-top" href="#myHeader">Powrót do góry</a>
-            <p class="copyright">Copyright 2022 Paweł Bogdanowicz</p>
+            <p class="copyright">Copyright 2022 Pawkeł Bogdanowicz</p>
         </footer>
     </div>
 </body>

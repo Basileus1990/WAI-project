@@ -25,6 +25,5 @@ function buildResponse($viewName, $model)
 
 function render($viewName, $model)
 {
-    extract($model);
     include 'views/' . $viewName . '.php';
 }
