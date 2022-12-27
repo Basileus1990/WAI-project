@@ -51,23 +51,33 @@
             <div class="gallery-content">
                 <h2>Galeria plakatów dobrych nawyków</h2>
                 <div class="popup-gallery">
-                    <a href="../images/nawyk1.jpg" title="Zdrowe nawyki"><img src="../images/nawyk1.jpg" width="175" height="150" alt="Zdrowe nawyki"></a>
-                    <a href="../images/nawyk2.jpg" title="Zdrowe nawyki"><img src="../images/nawyk2.jpg" width="175" height="150" alt="Zdrowe nawyki"></a>
-                    <a href="../images/nawyk3.png" title="Zdrowe nawyki"><img src="../images/nawyk3.png" width="175" height="150" alt="Zdrowe nawyki"></a>
-                    <a href="../images/nawyk4.jpg" title="Zdrowe nawyki"><img src="../images/nawyk4.jpg" width="175" height="150" alt="Zdrowe nawyki"></a>
-                    <a href="../images/nawyk5.jpg" title="Zdrowe nawyki"><img src="../images/nawyk5.jpg" width="175" height="150" alt="Zdrowe nawyki"></a>
-                    <a href="../images/nawyk6.jpg" title="Zdrowe nawyki"><img src="../images/nawyk6.jpg" width="175" height="150" alt="Zdrowe nawyki"></a>
+                    <?php foreach ($model['images-data'] as $image) : ?>
+                        <div class="popup-image">
+                            <p><?= $image['title'] ?></p>
+                            <a href="<?= 'images/watermarked/' . $image['name'] ?>" title="<?= $image['title'] ?>">
+                                <img src="<?= 'images/thumbnails/' . $image['name'] ?>" width="200" height="125" alt="Nie udało się wczytać miniaturki" />
+                            </a>
+                            <p><?= $image['author'] ?></p>
+                        </div>
+                    <?php endforeach ?>
                 </div>
             </div>
             <div class="image-user-input">
                 <form action="galeria" method="post" enctype="multipart/form-data">
                     <label for="#image">Wyślij zdjęcie:</label>
-                    <input type="file" , name="sent-image" id="sent-image" accept=".jpg, .jpeg, .png" />
+                    <input type="file" , name="sent-image" id="sent-image" accept=".jpg, .jpeg, .png" required />
+
+                    <label for="#title">Tytuł:</label>
+                    <input type="text" name="title" id="title" required>
+
+                    <label for="#title">Autor:</label>
+                    <input type="text" name="author" id="author" required>
+
+                    <label for="#watermark">Znak wodny:</label>
+                    <input type="text" name="watermark" id="watermark" required>
+
                     <button type="submit">Wyślij zdjęcie</button>
                 </form>
-                <?php if (key_exists('image-status-message', $model)) : ?>
-                    <span class="image-status-message"><?= $model['image-status-message'] ?></span>
-                <?php endif; ?>
             </div>
         </div>
         <footer>

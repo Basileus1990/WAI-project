@@ -9,5 +9,4 @@ session_start();
 
 $userAction = $_GET['action'];
 
-
 dispatch($routing, $userAction);

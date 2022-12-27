@@ -10,5 +10,35 @@ function getDB()
         ]
     );
 
-    $db = $mongo->wai;
+    return $mongo->wai;
+}
+
+function saveSentImageInDatabase($id, $name, $title, $author, $imagesPath)
+{
+    $db = getDB();
+    $dbImage = [
+        '_id' => $id,
+        'name' => $name,
+        'title' => $title,
+        'author' => $author,
+        'imagesPath' => $imagesPath
+    ];
+
+    $db->images->insertOne($dbImage);
+}
+
+function getSavedImagesByPage($selectedPage, $imagesPerPage)
+{
+    $db = getDB();
+    $options = [
+        'skip' => ($selectedPage - 1) * $imagesPerPage,
+        'limit' => $imagesPerPage
+    ];
+    return $db->images->find([], $options);
+}
+
+function getAllImages()
+{
+    $db = getDB();
+    return $db->images->find();
 }

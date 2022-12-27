@@ -48,6 +48,18 @@
 }
 
 .image-status-message {
+  display: block;
   color: rgb(255, 106, 0);
-  margin: 10px;
+  margin: 30px;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.goback-link {
+  margin: 0px;
+  padding: 5px;
+  font-size: large;
+  text-decoration: none;
+  border: 1px black solid;
+  border-radius: 5px;
 }

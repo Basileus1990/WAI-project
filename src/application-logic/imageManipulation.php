@@ -1,57 +1,57 @@
 <?php
-// creates and saves the image with a water mark and with a 
-// thumbnail in images/thumbnails/image.type
-// return false if upload images
-function manipulateSentImage($image, $watermark)
+
+const ORIGINALDIR = '/originals/';
+const THUMBNAILDIR = '/thumbnails/';
+const WATERMARKDIR = '/watermarked/';
+
+class SentImage
 {
-    define('UPLOAD_DIR', '/var/www/dev/src/web/images');
-    $imageName = basename($image['name']);
-    $target = UPLOAD_DIR . '/originals/' . $imageName;
-    if (!move_uploaded_file($image['tmp_name'], $target)) {
-        return false;
+    function __construct($imageID, $image, $uploadDir)
+    {
+        $this->uploadDir = $uploadDir;
+        $this->image = $image;
+
+        if ($this->image['type'] === 'image/jpg' || $this->image['type'] === 'image/jpeg') {
+            $this->image['name'] = $imageID . '.jpg';
+            $this->newImg = imagecreatefromjpeg($this->image['tmp_name']);
+        } elseif ($this->image['type'] === 'image/png') {
+            $this->image['name'] = $imageID . '.png';
+            $this->newImg = imagecreatefrompng($this->image['tmp_name']);
+        }
     }
 
-    $newImg = null;
-    if ($image['type'] === 'image/jpg' || $image['type'] === 'image/jpeg') {
-        $newImg = imagecreatefromjpeg($target);
-    } elseif ($image['type'] === 'image/png') {
-        $newImg = imagecreatefrompng($target);
+    function saveOriginalImage()
+    {
+        return move_uploaded_file($this->image['tmp_name'], $this->uploadDir . ORIGINALDIR . $this->image['name']);
     }
 
-    createWatermark($image, $newImg, $watermark);
-    createThumbnail($image, $newImg);
-
-    return true;
-}
-
-// directory -> a directory inside image directory
-function saveImage($image, $newImg, $directory)
-{
-    if ($image['type'] === 'image/jpg' || $image['type'] === 'image/jpeg') {
-        imagejpeg($newImg, UPLOAD_DIR . '/' . $directory . '/' . basename($image['name']));
-    } elseif ($image['type'] === 'image/png') {
-        imagepng($newImg, UPLOAD_DIR . '/' . $directory . '/' . basename($image['name']));
+    function saveNewImage($directory)
+    {
+        if ($this->image['type'] === 'image/jpg' || $this->image['type'] === 'image/jpeg') {
+            imagejpeg($this->newImg, $this->uploadDir . '/' . $directory . '/' . $this->image['name']);
+        } elseif ($this->image['type'] === 'image/png') {
+            imagepng($this->newImg, $this->uploadDir . '/' . $directory . '/' . $this->image['name']);
+        }
     }
-}
 
-// adds the watermark and saves the image with a watermark
-function createWatermark($image, $newImg, $watermark)
-{
-    $color = imagecolorallocate($newImg, 255, 255, 255);
-    $fontSize = 5;
-    $posX = ceil(imagesx($newImg) / 2) - strlen($watermark) * $fontSize;
-    $posY = ceil(imagesy($newImg) / 2);
-    imagestring($newImg, $fontSize, $posX, $posY, $watermark, $color);
+    function createWatermark($watermark)
+    {
+        $color = imagecolorallocate($this->newImg, 255, 255, 255);
+        $fontSize = 30;
+        $posX = ceil(imagesx($this->newImg) / 2) - strlen($watermark) * $fontSize / 3;
+        $posY = ceil(imagesy($this->newImg)) - 20;
+        putenv('GDFONTPATH=' . realpath('.'));
+        imagettftext($this->newImg, $fontSize, 0, $posX, $posY, $color, 'fonts/arial', $watermark);
 
-    saveImage($image, $newImg, 'watermarked');
-}
+        $this->saveNewImage(WATERMARKDIR);
+    }
 
-// resizes image nad saves resized images in thumbnails
-function createThumbnail($image, $newImg)
-{
-    define('THUMBNAIL_WIDTH', 200);
-    define('THUMBNAIL_HEIGHT', 125);
-    $newImg = imagescale($newImg, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT);
+    function createThumbnail()
+    {
+        define('THUMBNAIL_WIDTH', 200);
+        define('THUMBNAIL_HEIGHT', 125);
+        $this->newImg = imagescale($this->newImg, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT);
 
-    saveImage($image, $newImg, 'thumbnails');
+        $this->saveNewImage(THUMBNAILDIR);
+    }
 }
