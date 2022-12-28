@@ -13,6 +13,13 @@ function getDB()
     return $mongo->wai;
 }
 
+// developer tool
+function clearImages()
+{
+    $db = getDB();
+    $db->images->deleteMany([]);
+}
+
 function saveSentImageInDatabase($id, $name, $title, $author, $imagesPath)
 {
     $db = getDB();
@@ -35,6 +42,12 @@ function getSavedImagesByPage($selectedPage, $imagesPerPage)
         'limit' => $imagesPerPage
     ];
     return $db->images->find([], $options);
+}
+
+function getAmountOfImages()
+{
+    $db = getDB();
+    return $db->images->count();
 }
 
 function getAllImages()

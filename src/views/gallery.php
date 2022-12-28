@@ -61,6 +61,11 @@
                         </div>
                     <?php endforeach ?>
                 </div>
+                <div class="page-selector">
+                    <a href="<?= 'galeria?page=' . ($model['page'] - 1) ?>">&#60&#60&#60</a>
+                    <span><?= $model['page'] ?></span>
+                    <a href="<?= 'galeria?page=' . ($model['page'] + 1) ?>">&#62&#62&#62</a>
+                </div>
             </div>
             <div class="image-user-input">
                 <form action="galeria" method="post" enctype="multipart/form-data">

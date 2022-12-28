@@ -28,21 +28,20 @@ class SentImage
     function saveNewImage($directory)
     {
         if ($this->image['type'] === 'image/jpg' || $this->image['type'] === 'image/jpeg') {
-            imagejpeg($this->newImg, $this->uploadDir . '/' . $directory . '/' . $this->image['name']);
+            imagejpeg($this->newImg, $this->uploadDir . $directory . $this->image['name']);
         } elseif ($this->image['type'] === 'image/png') {
-            imagepng($this->newImg, $this->uploadDir . '/' . $directory . '/' . $this->image['name']);
+            imagepng($this->newImg, $this->uploadDir . $directory . $this->image['name']);
         }
     }
 
     function createWatermark($watermark)
     {
         $color = imagecolorallocate($this->newImg, 255, 255, 255);
-        $fontSize = 30;
-        $posX = ceil(imagesx($this->newImg) / 2) - strlen($watermark) * $fontSize / 3;
         $posY = ceil(imagesy($this->newImg)) - 20;
+        $fontSize = $posY / 5;
+        $posX = ceil(imagesx($this->newImg) / 2) - strlen($watermark) * $fontSize / 3;
         putenv('GDFONTPATH=' . realpath('.'));
         imagettftext($this->newImg, $fontSize, 0, $posX, $posY, $color, 'fonts/arial', $watermark);
-
         $this->saveNewImage(WATERMARKDIR);
     }
 

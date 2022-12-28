@@ -24,10 +24,17 @@ function gallery(&$model)
     define('IMAGES_PER_PAGE', 5);
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         require 'application-logic/database.php';
-        $page = 1;
-        if (!empty($_GET['page']) && $_GET['page'] > 0 && $_GET['page'] < ceil((count(getAllImages()) / IMAGES_PER_PAGE))) {
+        $page = null;
+        if (empty($_GET['page'])) {
+            $page = 1;
+        } elseif ($_GET['page'] > 0 && $_GET['page'] <= ceil(getAmountOfImages() / IMAGES_PER_PAGE)) {
             $page = $_GET['page'];
+        } elseif ($_GET['page'] <= 0) {
+            $page = 1;
+        } elseif ($_GET['page'] > ceil(getAmountOfImages() / IMAGES_PER_PAGE)) {
+            $page = intval(ceil(getAmountOfImages() / IMAGES_PER_PAGE));
         }
+        $model['page'] = $page;
         $model[IMAGES_DATA] = getSavedImagesByPage($page, IMAGES_PER_PAGE);
         return GALLERY;
     } elseif ($_FILES[SENT_IMAGE_KEY]['error'] != 0) {
