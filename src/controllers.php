@@ -1,4 +1,5 @@
 <?php
+define('STATUS_MESSAGE', 'image-status-message');
 
 function index(&$model)
 {
@@ -18,12 +19,12 @@ function goalTracker(&$model)
 function gallery(&$model)
 {
     define('SENT_IMAGE_KEY', 'sent-image');
-    define('STATUS_MESSAGE', 'image-status-message');
     define('IMAGES_DATA', 'images-data');
     define('UPLOAD_DIR', '/var/www/dev/src/web/images');
     define('IMAGES_PER_PAGE', 5);
+    $model['goBackLink'] = 'galeria';
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-        require 'application-logic/database.php';
+        require 'application-logic/imageManipulation.php';
         $page = null;
         if (empty($_GET['page'])) {
             $page = 1;
@@ -59,9 +60,65 @@ function gallery(&$model)
     $imageManipulator->createWatermark($_POST['watermark']);
     $imageManipulator->createThumbnail();
 
-    require 'application-logic/database.php';
     saveSentImageInDatabase($imageID, $imageManipulator->image['name'], $_POST['title'], $_POST['author'], UPLOAD_DIR);
 
     $model[STATUS_MESSAGE] = 'Przesłanie obrazu się powiodło';
     return IMAGE_SENT_RESULT;
+}
+
+function account(&$model)
+{
+    require 'application-logic/user.php';
+    $model['goBackLink'] = 'konto';
+    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+        if (getLoggedUser(session_id()) !== null) echo 'loged';
+        return ACCOUNT;
+    }
+    if ($_POST['logreg'] === 'login') {
+        if (empty($_POST['login']) || empty($_POST['password'])) {
+            $model[STATUS_MESSAGE] = 'Należy wpisać login i hasło!';
+            return IMAGE_SENT_RESULT;
+        }
+
+        $login = $_POST['login'];
+        $password = $_POST['password'];
+        $user = getUserWithGivenLogin($login);
+        if ($user === null) {
+            $model[STATUS_MESSAGE] = 'Nie istnieje konto o takim loginie';
+            return IMAGE_SENT_RESULT;
+        } elseif (!checkIfPasswordMatches($password, $user)) {
+            $model[STATUS_MESSAGE] = 'Niepoprawne hasło';
+            return IMAGE_SENT_RESULT;
+        }
+
+        loginUser($user, session_id());
+
+        $model[STATUS_MESSAGE] = 'Zalogowano pomyślnie';
+        return IMAGE_SENT_RESULT;
+    } elseif ($_POST['logreg'] === 'register') {
+        if (empty($_POST['login']) || empty($_POST['password']) || empty($_POST['email'])) {
+            $model[STATUS_MESSAGE] = 'Należy wpisać login, email i hasło!';
+            return IMAGE_SENT_RESULT;
+        }
+
+        $login = $_POST['login'];
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+        $passwordRepeat = $_POST['password-repeat'];
+        $user = getUserWithGivenLogin($login);
+        if ($user !== null) {
+            $model[STATUS_MESSAGE] = 'Istnieje konto o takim loginie';
+            return IMAGE_SENT_RESULT;
+        } elseif ($password !== $passwordRepeat) {
+            $model[STATUS_MESSAGE] = 'Podane hasła nie są takie same';
+            return IMAGE_SENT_RESULT;
+        }
+
+        registerUser($login, $email, $password, session_id());
+
+        $model[STATUS_MESSAGE] = 'Zarejestrowano pomyślnie';
+        return IMAGE_SENT_RESULT;
+    }
+
+    return ACCOUNT;
 }

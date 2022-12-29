@@ -11,13 +11,8 @@
 
     <link rel="stylesheet" href="styles/header.css">
     <link rel="stylesheet" href="styles/nav.css">
+    <link rel="stylesheet" href="styles/account.css">
     <link rel="stylesheet" href="styles/style.css">
-    <link rel="stylesheet" href="styles/magnific-popup.css">
-    <link rel="stylesheet" href="styles/gallery.css">
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="scripts/jquery.magnific-popup.min.js" defer></script>
-    <script src="scripts/gallery.js" defer></script>
 </head>
 
 <body>
@@ -37,28 +32,60 @@
             <input id="menu-button-checkbox" type="checkbox" name="menu">
             <ul class="nav-container">
                 <li class="nav-button"><a href="/">Strona główna</a></li>
-                <li class="nav-button active"><a href="#myHeader">Galeria</a></li>
+                <li class="nav-button active"><a href="#myHeader">Konto</a></li>
                 <li class="nav-button dropdown" tabindex="0">
                     Więcej
                     <ul class="dropdown-items">
                         <li class="nav-button"><a href="kontakt">Kontakt</a></li>
                         <li class="nav-button"><a href="kalendarzyk">Kalendarzyk</a></li>
-                        <li class="nav-button"><a href="konto">Konto</a></li>
+                        <li class="nav-button"><a href="galeria">Galeria</a></li>
                     </ul>
                 </li>
             </ul>
         </nav>
         <div class="website-content">
-            <div class="image-user-input">
-                <?php if (key_exists('image-status-message', $model)) : ?>
-                    <span class="image-status-message"><?= $model['image-status-message'] ?></span>
-                <?php endif; ?>
-                <a class="goback-link" href="/<?= $model['goBackLink'] ?>">Powrót</a>
-            </div>
+            <?php if (true) : ?>
+                <div class="logreg">
+
+                    <form action="konto" method="post">
+                        <h3>Zaloguj się</h3>
+                        <input type="text" name="logreg" hidden value="login">
+
+                        <label for="#login">Login: </label>
+                        <input type="text" , name="login" id="login" required />
+
+                        <label for="#password">Hasło: </label>
+                        <input type="password" name="password" id="password" required>
+
+                        <button type="submit">Zaloguj</button>
+                    </form>
+
+                    <form action="konto" method="post">
+                        <h3>Zarejestruj się</h3>
+                        <input type="text" name="logreg" hidden value="register">
+
+                        <label for="#login">Login: </label>
+                        <input type="text" , name="login" id="login" required />
+
+                        <label for="#email">Email: </label>
+                        <input type="email" , name="email" id="email" required />
+
+                        <label for="#password">Hasło: </label>
+                        <input type="password" name="password" id="password" required>
+
+                        <label for="#password-repeat">Powtórz hasło: </label>
+                        <input type="password" name="password-repeat" id="password-repeat" required>
+
+                        <button type="submit">Zarejestruj</button>
+                    </form>
+
+                </div>
+            <?php endif ?>
         </div>
+
         <footer>
             <a class="back-to-top" href="#myHeader">Powrót do góry</a>
-            <p class="copyright">Copyright 2022 Pawkeł Bogdanowicz</p>
+            <p class="copyright">Copyright 2022 Paweł Bogdanowicz</p>
         </footer>
     </div>
 </body>

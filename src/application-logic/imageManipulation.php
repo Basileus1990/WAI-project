@@ -54,3 +54,48 @@ class SentImage
         $this->saveNewImage(THUMBNAILDIR);
     }
 }
+
+// developer tool
+function clearImages()
+{
+    $db = getDB();
+    $db->images->deleteMany([]);
+}
+
+function saveSentImageInDatabase($id, $name, $title, $author, $imagesPath)
+{
+    $db = getDB();
+    $dbImage = [
+        '_id' => $id,
+        'name' => $name,
+        'title' => $title,
+        'author' => $author,
+        'imagesPath' => $imagesPath
+    ];
+
+    $db->images->insertOne($dbImage);
+}
+
+require 'database.php';
+
+function getSavedImagesByPage($selectedPage, $imagesPerPage)
+{
+    $db = getDB();
+    $options = [
+        'skip' => ($selectedPage - 1) * $imagesPerPage,
+        'limit' => $imagesPerPage
+    ];
+    return $db->images->find([], $options);
+}
+
+function getAmountOfImages()
+{
+    $db = getDB();
+    return $db->images->count();
+}
+
+function getAllImages()
+{
+    $db = getDB();
+    return $db->images->find();
+}
