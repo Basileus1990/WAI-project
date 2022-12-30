@@ -48,6 +48,7 @@
                 </li>
             </ul>
         </nav>
+        <?= !include 'account-info.php'; ?>
         <div class="website-content">
             <h2>Miejsce do śledzenia twoich postępów w postanowieniach</h2>
             <p class="important-paragraph">Znajdziesz tutaj nasz licznik dni, który pozwoli ci ciągle śledzić jak długo się trzymasz swojego postanowienia. Pozwoli to na zwiększenie szany na utrzymanie się nowego celu. Aby dodać nowy cel prosimy nacisnąć przycisk "<strong>+</strong>"</p>

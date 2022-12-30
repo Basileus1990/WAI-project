@@ -43,6 +43,7 @@
                 </li>
             </ul>
         </nav>
+        <?= !include 'account-info.php'; ?>
         <div class="website-content">
             <h1>ERROR 404</h1>
             <h2>Nie znaleziono zasobu!</h2>

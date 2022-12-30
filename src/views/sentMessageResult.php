@@ -48,6 +48,7 @@
                 </li>
             </ul>
         </nav>
+        <?= !include 'account-info.php'; ?>
         <div class="website-content">
             <div class="image-user-input">
                 <?php if (key_exists('image-status-message', $model)) : ?>

@@ -43,8 +43,9 @@
                 </li>
             </ul>
         </nav>
+        <?= !include 'account-info.php'; ?>
         <div class="website-content">
-            <?php if (true) : ?>
+            <?php if ($model['user'] === null) : ?>
                 <div class="logreg">
 
                     <form action="konto" method="post">
@@ -80,6 +81,9 @@
                     </form>
 
                 </div>
+            <?php endif ?>
+            <?php if ($model['user'] !== null) : ?>
+
             <?php endif ?>
         </div>
 

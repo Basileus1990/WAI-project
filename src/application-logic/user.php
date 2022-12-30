@@ -27,6 +27,15 @@ function loginUser($user, $sessionID)
     $db->users->replaceOne($querry, $user);
 }
 
+function logoutUser($sessionID)
+{
+    $user = getLoggedUser($sessionID);
+    $user['sessionID'] = null;
+    $querry = ['_id' => $user['_id']];
+    $db = getDB();
+    $db->users->replaceOne($querry, $user);
+}
+
 function getLoggedUser($sessionID)
 {
     $db = getDB();

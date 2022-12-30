@@ -48,6 +48,7 @@
                 </li>
             </ul>
         </nav>
+        <?= !include 'account-info.php'; ?>
         <div class="website-content">
             <div class="gallery-content">
                 <h2>Galeria plakatów dobrych nawyków</h2>
@@ -86,6 +87,7 @@
                 </form>
             </div>
         </div>
+
         <footer>
             <a class="back-to-top" href="#myHeader">Powrót do góry</a>
             <p class="copyright">Copyright 2022 Pawkeł Bogdanowicz</p>

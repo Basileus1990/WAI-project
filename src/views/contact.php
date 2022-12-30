@@ -45,6 +45,7 @@
                 </li>
             </ul>
         </nav>
+        <?= !include 'account-info.php'; ?>
         <div class="website-content">
             <h2>Wyślij nam swoją wiadomość odnośnie samorozwoju albo naszego serwisu.</h2>
             <form class="message-form" action="odbierz.php" method="post">

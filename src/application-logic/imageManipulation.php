@@ -76,8 +76,6 @@ function saveSentImageInDatabase($id, $name, $title, $author, $imagesPath)
     $db->images->insertOne($dbImage);
 }
 
-require 'database.php';
-
 function getSavedImagesByPage($selectedPage, $imagesPerPage)
 {
     $db = getDB();

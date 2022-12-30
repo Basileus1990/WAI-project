@@ -49,6 +49,7 @@
                 </li>
             </ul>
         </nav>
+        <?= !include 'account-info.php'; ?>
         <div class="website-content">
             <section>
                 <h2>Czym jest samorozwój?</h2>

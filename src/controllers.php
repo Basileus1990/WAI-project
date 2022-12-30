@@ -1,23 +1,33 @@
 <?php
 define('STATUS_MESSAGE', 'image-status-message');
+include 'application-logic/user.php';
+
+function checkLoginStatus(&$model)
+{
+    $model['user'] = getLoggedUser(session_id());
+}
 
 function index(&$model)
 {
+    checkLoginStatus($model);
     return INDEX;
 }
 
 function contact(&$model)
 {
+    checkLoginStatus($model);
     return CONTACT;
 }
 
 function goalTracker(&$model)
 {
+    checkLoginStatus($model);
     return GOALTRACKER;
 }
 
 function gallery(&$model)
 {
+    checkLoginStatus($model);
     define('SENT_IMAGE_KEY', 'sent-image');
     define('IMAGES_DATA', 'images-data');
     define('UPLOAD_DIR', '/var/www/dev/src/web/images');
@@ -68,10 +78,9 @@ function gallery(&$model)
 
 function account(&$model)
 {
-    require 'application-logic/user.php';
+    checkLoginStatus($model);
     $model['goBackLink'] = 'konto';
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-        if (getLoggedUser(session_id()) !== null) echo 'loged';
         return ACCOUNT;
     }
     if ($_POST['logreg'] === 'login') {
@@ -93,7 +102,8 @@ function account(&$model)
 
         loginUser($user, session_id());
 
-        $model[STATUS_MESSAGE] = 'Zalogowano pomyślnie';
+        $_SESSION['userID'] = $user['_id'];
+        $model[STATUS_MESSAGE] = 'Pomyślnie zalogowano';
         return IMAGE_SENT_RESULT;
     } elseif ($_POST['logreg'] === 'register') {
         if (empty($_POST['login']) || empty($_POST['password']) || empty($_POST['email'])) {
@@ -116,7 +126,13 @@ function account(&$model)
 
         registerUser($login, $email, $password, session_id());
 
-        $model[STATUS_MESSAGE] = 'Zarejestrowano pomyślnie';
+        $model[STATUS_MESSAGE] = 'Pomyślnie zarejestrowano';
+        return IMAGE_SENT_RESULT;
+    } elseif ($_POST['logreg'] === 'logout') {
+        logoutUser(session_id());
+
+        $model['user'] = null;
+        $model[STATUS_MESSAGE] = 'Pomyślnie wylogowano';
         return IMAGE_SENT_RESULT;
     }
 
