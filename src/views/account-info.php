@@ -7,3 +7,12 @@
         </form>
     </div>
 <?php endif ?>
+
+<?php if ($model['user'] === null) : ?>
+    <div class="account-info not-loged">
+        <form action="konto" method="get">
+            <button type="submit">Zaloguj</button>
+            <button type="submit">Zarejestruj</button>
+        </form>
+    </div>
+<?php endif ?>

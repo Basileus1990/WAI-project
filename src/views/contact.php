@@ -40,7 +40,6 @@
                     <ul class="dropdown-items">
                         <li class="nav-button"><a href="kalendarzyk">Kalendarzyk</a></li>
                         <li class="nav-button"><a href="galeria">Galeria</a></li>
-                        <li class="nav-button"><a href="konto">Konto</a></li>
                     </ul>
                 </li>
             </ul>
