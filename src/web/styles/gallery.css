@@ -45,6 +45,16 @@
   margin-bottom: 0;
 }
 
+.save-selected-button {
+  float: right;
+  font-size: 20px;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 5px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
 .page-selector {
   text-align: center;
 }

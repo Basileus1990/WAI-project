@@ -37,13 +37,12 @@
             <input id="menu-button-checkbox" type="checkbox" name="menu">
             <ul class="nav-container">
                 <li class="nav-button"><a href="/">Strona główna</a></li>
-                <li class="nav-button active"><a href="#myHeader">Wiadomość</a></li>
+                <li class="nav-button active"><a href="#myHeader">Ulubione Zdjęcia</a></li>
                 <li class="nav-button dropdown" tabindex="0">
                     Więcej
                     <ul class="dropdown-items">
                         <li class="nav-button"><a href="kontakt">Kontakt</a></li>
                         <li class="nav-button"><a href="kalendarzyk">Kalendarzyk</a></li>
-                        <li class="nav-button"><a href="ulubione-zdjecia">Ulubione zdjęcia</a></li>
                         <li class="nav-button"><a href="galeria">Galeria</a></li>
                     </ul>
                 </li>
@@ -51,13 +50,34 @@
         </nav>
         <?= !include 'account-info.php'; ?>
         <div class="website-content">
-            <div class="image-user-input">
-                <?php if (key_exists('image-status-message', $model)) : ?>
-                    <span class="image-status-message"><?= $model['image-status-message'] ?></span>
-                <?php endif; ?>
-                <a class="goback-link" href="/<?= $model['goBackLink'] ?>">Powrót</a>
+            <div class="gallery-content">
+                <h2>Galeria</h2>
+                <form action="ulubione-zdjecia" method="post">
+                    <input type="text" name="save-selected" hidden value="save-selected" />
+                    <div class="popup-gallery">
+                        <?php foreach ($model['images-data'] as $image) : ?>
+                            <div class="popup-image">
+                                <p>
+                                    <input name="saved-image-id[]" type="checkbox" value="<?= $image['_id'] ?>" />
+                                    <?= $image['title'] ?>
+                                </p>
+                                <a href="<?= 'images/watermarked/' . $image['name'] ?>" title="<?= $image['title'] ?>">
+                                    <img src="<?= 'images/thumbnails/' . $image['name'] ?>" width="200" height="125" alt="Nie udało się wczytać miniaturki" />
+                                </a>
+                                <p><?= $image['author'] ?></p>
+                            </div>
+                        <?php endforeach ?>
+                    </div>
+                    <input type="submit" class="save-selected-button" value="Usuń wybrane" name="buttonDelete">
+                </form>
+                <div class="page-selector">
+                    <a href="<?= 'ulubione-zdjecia?page=' . ($model['page'] - 1) ?>" title="Poprzednia strona">&#60&#60&#60</a>
+                    <span><?= $model['page'] ?></span>
+                    <a href="<?= 'ulubione-zdjecia?page=' . ($model['page'] + 1) ?>" title="Natępna strona">&#62&#62&#62</a>
+                </div>
             </div>
         </div>
+
         <footer>
             <a class="back-to-top" href="#myHeader">Powrót do góry</a>
             <p class="copyright">Copyright 2022 Pawkeł Bogdanowicz</p>

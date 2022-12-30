@@ -86,6 +86,12 @@ function getSavedImagesByPage($selectedPage, $imagesPerPage)
     return $db->images->find([], $options);
 }
 
+function getSavedImageByQuerry($id)
+{
+    $db = getDB();
+    return $db->images->findOne(['_id' => $id]);
+}
+
 function getAmountOfImages()
 {
     $db = getDB();

@@ -43,6 +43,7 @@
                     <ul class="dropdown-items">
                         <li class="nav-button"><a href="kontakt">Kontakt</a></li>
                         <li class="nav-button"><a href="kalendarzyk">Kalendarzyk</a></li>
+                        <li class="nav-button"><a href="ulubione-zdjecia">Ulubione zdjęcia</a></li>
                     </ul>
                 </li>
             </ul>
@@ -50,22 +51,30 @@
         <?= !include 'account-info.php'; ?>
         <div class="website-content">
             <div class="gallery-content">
-                <h2>Galeria plakatów dobrych nawyków</h2>
-                <div class="popup-gallery">
-                    <?php foreach ($model['images-data'] as $image) : ?>
-                        <div class="popup-image">
-                            <p><?= $image['title'] ?></p>
-                            <a href="<?= 'images/watermarked/' . $image['name'] ?>" title="<?= $image['title'] ?>">
-                                <img src="<?= 'images/thumbnails/' . $image['name'] ?>" width="200" height="125" alt="Nie udało się wczytać miniaturki" />
-                            </a>
-                            <p><?= $image['author'] ?></p>
-                        </div>
-                    <?php endforeach ?>
-                </div>
+                <h2>Galeria</h2>
+                <form action="galeria" method="post">
+                    <input type="text" name="save-selected" hidden value="save-selected" />
+                    <div class="popup-gallery">
+                        <?php foreach ($model['images-data'] as $image) : ?>
+                            <div class="popup-image">
+                                <p>
+                                    <input name="saved-image-id[]" type="checkbox" value="<?= $image['_id'] ?>" <?php if (!empty($model['savedImagesID']) && in_array($image['_id'], $model['savedImagesID'])) : ?> checked <?php endif ?> />
+                                    <?= $image['title'] ?>
+                                </p>
+                                <a href="<?= 'images/watermarked/' . $image['name'] ?>" title="<?= $image['title'] ?>">
+                                    <img src="<?= 'images/thumbnails/' . $image['name'] ?>" width="200" height="125" alt="Nie udało się wczytać miniaturki" />
+                                </a>
+                                <p><?= $image['author'] ?></p>
+                            </div>
+                        <?php endforeach ?>
+                    </div>
+                    <input type="submit" class="save-selected-button" value="Zapisz wybrane" name="buttonSave">
+                    <input type="submit" class="save-selected-button" value="Usuń wybrane" name="buttonDelete">
+                </form>
                 <div class="page-selector">
-                    <a href="<?= 'galeria?page=' . ($model['page'] - 1) ?>">&#60&#60&#60</a>
+                    <a href="<?= 'galeria?page=' . ($model['page'] - 1) ?>" title="Poprzednia strona">&#60&#60&#60</a>
                     <span><?= $model['page'] ?></span>
-                    <a href="<?= 'galeria?page=' . ($model['page'] + 1) ?>">&#62&#62&#62</a>
+                    <a href="<?= 'galeria?page=' . ($model['page'] + 1) ?>" title="Natępna strona">&#62&#62&#62</a>
                 </div>
             </div>
             <div class="image-user-input">
