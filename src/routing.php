@@ -6,6 +6,8 @@ const GOALTRACKER = 'goalTracker';
 const GALLERY = 'gallery';
 const FAV_IMAGES_GALLERY = 'favImagesGallery';
 const IMAGE_SENT_RESULT = 'sentMessageResult';
+const SEARCH = 'search';
+const SEARCHRESULT = 'searchResult';
 const ACCOUNT = 'account';
 const ERROR404 = 'E404';
 
@@ -16,5 +18,7 @@ $routing = [
     '/kalendarzyk' => GOALTRACKER,
     '/galeria' => GALLERY,
     '/ulubione-zdjecia' => FAV_IMAGES_GALLERY,
-    '/konto' => ACCOUNT
+    '/konto' => ACCOUNT,
+    '/wyszukiwarka' => SEARCH,
+    '/wyszukiwarka/wyszukaj' => SEARCHRESULT
 ];

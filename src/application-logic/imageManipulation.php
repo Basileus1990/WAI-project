@@ -62,7 +62,7 @@ function clearImages()
     $db->images->deleteMany([]);
 }
 
-function saveSentImageInDatabase($id, $name, $title, $author, $imagesPath)
+function saveSentImageInDatabase($id, $name, $title, $author, $authorID, $imagesPath)
 {
     $db = getDB();
     $dbImage = [
@@ -70,32 +70,84 @@ function saveSentImageInDatabase($id, $name, $title, $author, $imagesPath)
         'name' => $name,
         'title' => $title,
         'author' => $author,
+        'authorID' => $authorID,
         'imagesPath' => $imagesPath
     ];
 
     $db->images->insertOne($dbImage);
 }
 
-function getSavedImagesByPage($selectedPage, $imagesPerPage)
+function getSavedImagesByPage($selectedPage, $imagesPerPage, $user)
 {
-    $db = getDB();
+    $userID = null;
+    if ($user !== null) {
+        $userID = $user['_id'];
+    }
+    $querry = [
+        '$or' => [
+            ['authorID' => null],
+            ['authorID' => $userID],
+        ]
+    ];
     $options = [
         'skip' => ($selectedPage - 1) * $imagesPerPage,
         'limit' => $imagesPerPage
     ];
-    return $db->images->find([], $options);
+
+    $db = getDB();
+    return $db->images->find($querry, $options);
 }
 
-function getSavedImageByQuerry($id)
+function getSavedImagesByTitle($user, $title)
 {
+    $userID = null;
+    if ($user !== null) {
+        $userID = $user['_id'];
+    }
+    $querry = [
+        '$or' => [
+            ['authorID' => null],
+            ['authorID' => $userID],
+        ],
+        "title" => new MongoDB\BSON\Regex($title)
+    ];
+
     $db = getDB();
-    return $db->images->findOne(['_id' => $id]);
+    return $db->images->find($querry);
 }
 
-function getAmountOfImages()
+function getSavedImageByID($id, $user)
 {
+    $userID = null;
+    if ($user !== null) {
+        $userID = $user['_id'];
+    }
+    $querry = [
+        '$or' => [
+            ['authorID' => null],
+            ['authorID' => $userID],
+        ],
+        '_id' => $id
+    ];
+
     $db = getDB();
-    return $db->images->count();
+    return $db->images->findOne($querry);
+}
+
+function getAmountOfImages($user)
+{
+    $userID = null;
+    if ($user !== null) {
+        $userID = $user['_id'];
+    }
+    $querry = [
+        '$or' => [
+            ['authorID' => null],
+            ['authorID' => $userID],
+        ]
+    ];
+    $db = getDB();
+    return $db->images->count($querry);
 }
 
 function getAllImages()

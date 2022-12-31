@@ -18,6 +18,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="scripts/jquery.magnific-popup.min.js" defer></script>
     <script src="scripts/gallery.js" defer></script>
+    <script src="scripts/search.js" defer></script>
 </head>
 
 <body>
@@ -37,14 +38,14 @@
             <input id="menu-button-checkbox" type="checkbox" name="menu">
             <ul class="nav-container">
                 <li class="nav-button"><a href="/">Strona główna</a></li>
-                <li class="nav-button active"><a href="#myHeader">Ulubione Zdjęcia</a></li>
+                <li class="nav-button active"><a href="#myHeader">Wyszukiwarka</a></li>
                 <li class="nav-button dropdown" tabindex="0">
                     Więcej
                     <ul class="dropdown-items">
                         <li class="nav-button"><a href="kontakt">Kontakt</a></li>
                         <li class="nav-button"><a href="kalendarzyk">Kalendarzyk</a></li>
                         <li class="nav-button"><a href="galeria">Galeria</a></li>
-                        <li class="nav-button"><a href="wyszukiwarka">Wyszukiwarka</a></li>
+                        <li class="nav-button"><a href="ulubione-zdjecia">Ulubione zdjęcia</a></li>
                     </ul>
                 </li>
             </ul>
@@ -52,30 +53,10 @@
         <?= !include 'account-info.php'; ?>
         <div class="website-content">
             <div class="gallery-content">
-                <h2>Galeria</h2>
-                <form action="ulubione-zdjecia" method="post">
-                    <input type="text" name="save-selected" hidden value="save-selected" />
-                    <div class="popup-gallery">
-                        <?php foreach ($model['images-data'] as $image) : ?>
-                            <div class="popup-image">
-                                <p>
-                                    <input name="saved-image-id[]" type="checkbox" value="<?= $image['_id'] ?>" />
-                                    <?= $image['title'] ?>
-                                </p>
-                                <a href="<?= 'images/watermarked/' . $image['name'] ?>" title="<?= $image['title'] ?>">
-                                    <img src="<?= 'images/thumbnails/' . $image['name'] ?>" width="200" height="125" alt="Nie udało się wczytać miniaturki" />
-                                </a>
-                                <p><?= $image['author'] ?></p>
-                            </div>
-                        <?php endforeach ?>
-                    </div>
-                    <input type="submit" class="save-selected-button" value="Usuń wybrane" name="buttonDelete">
-                </form>
-                <div class="page-selector">
-                    <a href="<?= 'ulubione-zdjecia?page=' . ($model['page'] - 1) ?>" title="Poprzednia strona">&#60&#60&#60</a>
-                    <span><?= $model['page'] ?></span>
-                    <a href="<?= 'ulubione-zdjecia?page=' . ($model['page'] + 1) ?>" title="Natępna strona">&#62&#62&#62</a>
-                </div>
+                <h2>Wyszukiwarka</h2>
+                <input type="text" id="search-bar" />
+
+                <div id="search-result"></div>
             </div>
         </div>
 

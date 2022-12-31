@@ -44,6 +44,7 @@
                         <li class="nav-button"><a href="kontakt">Kontakt</a></li>
                         <li class="nav-button"><a href="kalendarzyk">Kalendarzyk</a></li>
                         <li class="nav-button"><a href="ulubione-zdjecia">Ulubione zdjęcia</a></li>
+                        <li class="nav-button"><a href="wyszukiwarka">Wyszukiwarka</a></li>
                     </ul>
                 </li>
             </ul>
@@ -51,7 +52,7 @@
         <?= !include 'account-info.php'; ?>
         <div class="website-content">
             <div class="gallery-content">
-                <h2>Galeria</h2>
+                <h2>Galeria o samorozwoju</h2>
                 <form action="galeria" method="post">
                     <input type="text" name="save-selected" hidden value="save-selected" />
                     <div class="popup-gallery">
@@ -59,7 +60,8 @@
                             <div class="popup-image">
                                 <p>
                                     <input name="saved-image-id[]" type="checkbox" value="<?= $image['_id'] ?>" <?php if (!empty($model['savedImagesID']) && in_array($image['_id'], $model['savedImagesID'])) : ?> checked <?php endif ?> />
-                                    <?= $image['title'] ?>
+                                    <?php if ($image['authorID'] !== null) : ?>Prywatne: <?php endif ?>
+                                <?= $image['title'] ?>
                                 </p>
                                 <a href="<?= 'images/watermarked/' . $image['name'] ?>" title="<?= $image['title'] ?>">
                                     <img src="<?= 'images/thumbnails/' . $image['name'] ?>" width="200" height="125" alt="Nie udało się wczytać miniaturki" />
@@ -86,10 +88,22 @@
                     <input type="text" name="title" id="title" required>
 
                     <label for="#title">Autor:</label>
-                    <input type="text" name="author" id="author" required>
+                    <input type="text" name="author" id="author" required <?php if ($model['user'] !== null) : ?> value="<?= $model['user']['login'] ?>" <?php endif ?>>
 
                     <label for="#watermark">Znak wodny:</label>
                     <input type="text" name="watermark" id="watermark" required>
+
+                    <div>
+                        <label for="#public-radio" <?php if ($model['user'] === null) : ?>hidden<?php endif ?>>Publiczne:</label>
+                        <input type="radio" id="public-radio" name="visibility" value="public" checked <?php if ($model['user'] === null) : ?>hidden<?php endif ?>>
+                    </div>
+                    <div>
+                        <label for="#private-radio" <?php if ($model['user'] === null) : ?>hidden<?php endif ?>>Prywatne:</label>
+                        <input type="radio" id="private-radio" name="visibility" value="private" <?php if ($model['user'] === null) : ?>hidden<?php endif ?>>
+                    </div>
+                    <?php if ($model['user'] !== null) : ?>
+
+                    <?php endif ?>
 
                     <button type="submit">Wyślij zdjęcie</button>
                 </form>
@@ -98,7 +112,7 @@
 
         <footer>
             <a class="back-to-top" href="#myHeader">Powrót do góry</a>
-            <p class="copyright">Copyright 2022 Pawkeł Bogdanowicz</p>
+            <p class="copyright">Copyright 2022 Paweł Bogdanowicz</p>
         </footer>
     </div>
 </body>

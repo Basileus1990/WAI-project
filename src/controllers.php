@@ -30,6 +30,9 @@ function goalTracker(&$model)
 function gallery(&$model)
 {
     checkLoginStatus($model);
+    if (!isset($_SESSION['savedImagesID'])) {
+        $_SESSION['savedImagesID'] = [];
+    }
     define('SENT_IMAGE_KEY', 'sent-image');
     define('UPLOAD_DIR', getcwd() . '/images');
     $model['goBackLink'] = 'galeria';
@@ -38,21 +41,24 @@ function gallery(&$model)
         $page = null;
         if (empty($_GET['page'])) {
             $page = 1;
-        } elseif ($_GET['page'] > 0 && $_GET['page'] <= ceil(getAmountOfImages() / IMAGES_PER_PAGE)) {
+        } elseif ($_GET['page'] > 0 && $_GET['page'] <= ceil(getAmountOfImages($model['user']) / IMAGES_PER_PAGE)) {
             $page = $_GET['page'];
         } elseif ($_GET['page'] <= 0) {
             $page = 1;
-        } elseif ($_GET['page'] > ceil(getAmountOfImages() / IMAGES_PER_PAGE)) {
-            $page = intval(ceil(getAmountOfImages() / IMAGES_PER_PAGE));
+        } elseif ($_GET['page'] > ceil(getAmountOfImages($model['user']) / IMAGES_PER_PAGE)) {
+            $page = intval(ceil(getAmountOfImages($model['user']) / IMAGES_PER_PAGE));
         }
 
         $model['page'] = $page;
-        $model[IMAGES_DATA] = getSavedImagesByPage($page, IMAGES_PER_PAGE);
+        $model[IMAGES_DATA] = getSavedImagesByPage($page, IMAGES_PER_PAGE, $model['user']);
         if (!empty($_SESSION['savedImagesID'])) {
             $model['savedImagesID'] = $_SESSION['savedImagesID'];
         }
         return GALLERY;
-    } elseif (!empty($_POST['save-selected']) && !empty($_POST['buttonSave'])) {
+    } elseif (isset($_POST['save-selected']) && !isset($_POST['saved-image-id'])) {
+        $model[STATUS_MESSAGE] = 'Nie zaznaczano żadnego zdjęcia';
+        return IMAGE_SENT_RESULT;
+    } elseif (isset($_POST['save-selected']) && isset($_POST['buttonSave'])) {
         foreach ($_POST['saved-image-id'] as $savedImageID) {
             if (empty($_SESSION['savedImagesID'])) {
                 $_SESSION['savedImagesID'] = [];
@@ -64,7 +70,7 @@ function gallery(&$model)
 
         $model[STATUS_MESSAGE] = 'Zapisanie się powiodło';
         return IMAGE_SENT_RESULT;
-    } elseif (!empty($_POST['save-selected']) && !empty($_POST['buttonDelete'])) {
+    } elseif (isset($_POST['save-selected']) && isset($_POST['buttonDelete'])) {
         foreach ($_POST['saved-image-id'] as $savedImageID) {
             if (empty($_SESSION['savedImagesID'])) {
                 break;
@@ -99,7 +105,11 @@ function gallery(&$model)
     $imageManipulator->createWatermark($_POST['watermark']);
     $imageManipulator->createThumbnail();
 
-    saveSentImageInDatabase($imageID, $imageManipulator->image['name'], $_POST['title'], $_POST['author'], UPLOAD_DIR);
+    $authorID = null;
+    if ($model['user'] !== null && $_POST['visibility'] === 'private') {
+        $authorID = $model['user']['_id'];
+    }
+    saveSentImageInDatabase($imageID, $imageManipulator->image['name'], $_POST['title'], $_POST['author'], $authorID, UPLOAD_DIR);
 
     $model[STATUS_MESSAGE] = 'Przesłanie obrazu się powiodło';
     return IMAGE_SENT_RESULT;
@@ -108,6 +118,9 @@ function gallery(&$model)
 function favImagesGallery(&$model)
 {
     checkLoginStatus($model);
+    if (!isset($_SESSION['savedImagesID'])) {
+        $_SESSION['savedImagesID'] = [];
+    }
     $model['goBackLink'] = 'ulubione-zdjecia';
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!isset($_SESSION['savedImagesID'])) {
@@ -137,7 +150,7 @@ function favImagesGallery(&$model)
             } elseif ($i < IMAGES_PER_PAGE * ($page - 1)) {
                 continue;
             }
-            array_push($model[IMAGES_DATA], getSavedImageByQuerry(new MongoDB\BSON\ObjectID($id)));
+            array_push($model[IMAGES_DATA], getSavedImageByID(new MongoDB\BSON\ObjectID($id), $model['user']));
         }
         return FAV_IMAGES_GALLERY;
     } elseif (!empty($_POST['save-selected']) && !empty($_POST['buttonDelete'])) {
@@ -161,7 +174,7 @@ function favImagesGallery(&$model)
 function account(&$model)
 {
     checkLoginStatus($model);
-    $model['goBackLink'] = 'konto';
+    $model['goBackLink'] = '';
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         return ACCOUNT;
     }
@@ -215,8 +228,37 @@ function account(&$model)
 
         $model['user'] = null;
         $model[STATUS_MESSAGE] = 'Pomyślnie wylogowano';
+        $model['goBackLink'] = 'konto';
         return IMAGE_SENT_RESULT;
     }
 
     return ACCOUNT;
+}
+
+function search(&$model)
+{
+    checkLoginStatus($model);
+    return SEARCH;
+}
+
+function searchResult(&$model)
+{
+    checkLoginStatus($model);
+    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+        require 'application-logic/imageManipulation.php';
+
+        $search = $_GET['search'];
+        $model[IMAGES_DATA] = getSavedImagesByTitle($model['user'], $search)->toarray();
+
+        $isEmpty = true;
+        // foreach ($model[IMAGES_DATA] as $image) {
+        //     $isEmpty = false;
+        //     break;
+        // }
+        if (!count($model[IMAGES_DATA])) {
+            $model[IMAGES_DATA] = [];
+        }
+        return SEARCHRESULT;
+    }
+    return SEARCHRESULT;
 }

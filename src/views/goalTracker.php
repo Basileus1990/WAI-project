@@ -44,6 +44,7 @@
                         <li class="nav-button"><a href="kontakt">Kontakt</a></li>
                         <li class="nav-button"><a href="galeria">Galeria</a></li>
                         <li class="nav-button"><a href="ulubione-zdjecia">Ulubione zdjęcia</a></li>
+                        <li class="nav-button"><a href="wyszukiwarka">Wyszukiwarka</a></li>
                     </ul>
                 </li>
             </ul>
