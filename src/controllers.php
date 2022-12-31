@@ -31,7 +31,7 @@ function gallery(&$model)
 {
     checkLoginStatus($model);
     define('SENT_IMAGE_KEY', 'sent-image');
-    define('UPLOAD_DIR', '/var/www/dev/src/web/images');
+    define('UPLOAD_DIR', getcwd() . '/images');
     $model['goBackLink'] = 'galeria';
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         require 'application-logic/imageManipulation.php';
