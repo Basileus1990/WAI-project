@@ -29,12 +29,13 @@ function goalTracker(&$model)
 
 function gallery(&$model)
 {
+    define('SENT_IMAGE_KEY', 'sent-image');
+    define('UPLOAD_DIR', getcwd() . '/images');
+
     checkLoginStatus($model);
     if (!isset($_SESSION['savedImagesID'])) {
         $_SESSION['savedImagesID'] = [];
     }
-    define('SENT_IMAGE_KEY', 'sent-image');
-    define('UPLOAD_DIR', getcwd() . '/images');
     $model['goBackLink'] = 'galeria';
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         require 'application-logic/imageManipulation.php';
@@ -54,15 +55,16 @@ function gallery(&$model)
         if (!empty($_SESSION['savedImagesID'])) {
             $model['savedImagesID'] = $_SESSION['savedImagesID'];
         }
+
         return GALLERY;
     } elseif (isset($_POST['save-selected']) && !isset($_POST['saved-image-id'])) {
         $model[STATUS_MESSAGE] = 'Nie zaznaczano żadnego zdjęcia';
         return IMAGE_SENT_RESULT;
     } elseif (isset($_POST['save-selected']) && isset($_POST['buttonSave'])) {
+        if (empty($_SESSION['savedImagesID'])) {
+            $_SESSION['savedImagesID'] = [];
+        }
         foreach ($_POST['saved-image-id'] as $savedImageID) {
-            if (empty($_SESSION['savedImagesID'])) {
-                $_SESSION['savedImagesID'] = [];
-            }
             if (!in_array($savedImageID, $_SESSION['savedImagesID'])) {
                 array_push($_SESSION['savedImagesID'], $savedImageID);
             }
@@ -71,26 +73,31 @@ function gallery(&$model)
         $model[STATUS_MESSAGE] = 'Zapisanie się powiodło';
         return IMAGE_SENT_RESULT;
     } elseif (isset($_POST['save-selected']) && isset($_POST['buttonDelete'])) {
+        if (empty($_SESSION['savedImagesID'])) {
+            $_SESSION['savedImagesID'] = [];
+        }
         foreach ($_POST['saved-image-id'] as $savedImageID) {
-            if (empty($_SESSION['savedImagesID'])) {
-                break;
-            }
             if (in_array($savedImageID, $_SESSION['savedImagesID'])) {
                 unset($_SESSION['savedImagesID'][array_search($savedImageID, $_SESSION['savedImagesID'])]);
             }
         }
-        $_SESSION['savedImagesID'] = array_values($_SESSION['savedImagesID']);
 
         $model[STATUS_MESSAGE] = 'Usuwanie się powiodło';
         return IMAGE_SENT_RESULT;
+    } elseif (!isset($_FILES[SENT_IMAGE_KEY])) {
+        $model[STATUS_MESSAGE] = 'Wystąpił błąd. Przepraszamy';
+        return IMAGE_SENT_RESULT;
     } elseif ($_FILES[SENT_IMAGE_KEY]['error'] != 0) {
         $model[STATUS_MESSAGE] = 'Nie wybrano żadnego pliku';
+        return IMAGE_SENT_RESULT;
+    } elseif (!($_FILES[SENT_IMAGE_KEY]['type'] === 'image/jpeg' || $_FILES[SENT_IMAGE_KEY]['type'] === 'image/jpg'  || $_FILES[SENT_IMAGE_KEY]['type'] === 'image/png') && $_FILES[SENT_IMAGE_KEY]['size'] > 1000000) {
+        $model[STATUS_MESSAGE] = 'Zły typ pliku i obraz jest za duży. Maksymalny rozmiar to 1MB';
         return IMAGE_SENT_RESULT;
     } elseif (!($_FILES[SENT_IMAGE_KEY]['type'] === 'image/jpeg' || $_FILES[SENT_IMAGE_KEY]['type'] === 'image/jpg'  || $_FILES[SENT_IMAGE_KEY]['type'] === 'image/png')) {
         $model[STATUS_MESSAGE] = 'Zły typ pliku';
         return IMAGE_SENT_RESULT;
     } elseif ($_FILES[SENT_IMAGE_KEY]['size'] > 1000000) {
-        $model[STATUS_MESSAGE] = 'Obraz za duży. Maksymalny rozmiar to 1MB';
+        $model[STATUS_MESSAGE] = 'Obraz za jest duży. Maksymalny rozmiar to 1MB';
         return IMAGE_SENT_RESULT;
     }
 
@@ -154,15 +161,14 @@ function favImagesGallery(&$model)
         }
         return FAV_IMAGES_GALLERY;
     } elseif (!empty($_POST['save-selected']) && !empty($_POST['buttonDelete'])) {
+        if (empty($_SESSION['savedImagesID'])) {
+            $_SESSION['savedImagesID'] = [];
+        }
         foreach ($_POST['saved-image-id'] as $savedImageID) {
-            if (empty($_SESSION['savedImagesID'])) {
-                break;
-            }
             if (in_array($savedImageID, $_SESSION['savedImagesID'])) {
                 unset($_SESSION['savedImagesID'][array_search($savedImageID, $_SESSION['savedImagesID'])]);
             }
         }
-        $_SESSION['savedImagesID'] = array_values($_SESSION['savedImagesID']);
 
         $model[STATUS_MESSAGE] = 'Usuwanie się powiodło';
         return IMAGE_SENT_RESULT;
